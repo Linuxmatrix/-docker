@@ -1,0 +1,17 @@
+- name: Adding  Docker Proxy
+  hosts: Linux
+  tasks:
+    - name: restarting service
+      shell: |
+       mkdir -p /etc/systemd/system/docker.service.d
+    - copy:
+        src: /var/www/html/http-proxy.conf
+        dest: /etc/systemd/system/docker.service.d/http-proxy.conf
+    - copy:
+        src: /var/www/html/External_Root_CA_2_1.crt
+        dest: /etc/pki/ca-trust/source/anchors
+    - name: restarting service
+      shell: |
+        update-ca-trust extract
+        systemctl restart docker
+        systemctl daemon-reload
